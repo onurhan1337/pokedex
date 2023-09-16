@@ -30,7 +30,7 @@ Pokedex web app for learn useSWR
 ## Demo
 
 ```bash
-https://pokedex.vercel.app
+https://pokedex-beta-three-39.vercel.app/
 ```
 
 ## Getting Started
