@@ -1,12 +1,12 @@
 "use client";
 
 import { Fragment } from "react";
-import useSWR from "swr";
-
-import { Pokemon } from "types/pokemon";
-import { getPokemon } from "app/actions";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+
+import { usePokemon } from "lib/utils";
+import { Pokemon } from "types/pokemon";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardHeader } from "@/components/ui/card";
 
 interface Params {
@@ -15,29 +15,8 @@ interface Params {
   };
 }
 
-// This is a custom hook that fetches a pokemon by name
-function usePokemon(name: string) {
-  const { data, isLoading, mutate } = useSWR(name, async () => {
-    try {
-      return await getPokemon(name);
-    } catch (error) {
-      if (error instanceof Error && error.cause == "404") {
-        return null;
-      } else {
-        throw error;
-      }
-    }
-  });
-
-  return {
-    pokemon: data,
-    isLoading,
-    mutate,
-  };
-}
-
 export default function PokemonDetailPage({ params }: Params) {
-  const { pokemon, isLoading } = usePokemon(params.slug);
+  const { data: pokemon, isLoading } = usePokemon<Pokemon>(params.slug);
 
   return (
     <div className="px-6">
@@ -108,6 +87,19 @@ export default function PokemonDetailPage({ params }: Params) {
             </div>
           </div>
         </Fragment>
+      )}
+      {!isLoading && !pokemon && (
+        <div className="flex flex-col items-center justify-center h-screen">
+          <h1 className="text-2xl font-bold">Pokemon not found</h1>
+          <Link
+            href={{
+              pathname: "/",
+            }}
+            className="font-bold py-3"
+          >
+            <Button>Go back to home</Button>
+          </Link>
+        </div>
       )}
     </div>
   );

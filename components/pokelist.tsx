@@ -1,33 +1,48 @@
 "use client";
 
-import { Fragment } from "react";
 import { useSearchParams } from "next/navigation";
-import useSWR from "swr";
+import { RotateCcw } from "lucide-react";
 
-import { getPokemonPage } from "app/actions";
 import PokeCard from "./pokecard";
+import { Button } from "./ui/button";
 import { Pokemon } from "types/pokemon";
+import { usePokemonPage } from "lib/utils";
+
+interface PokemonApiResponse {
+  results: Pokemon[];
+}
 
 const Pokelist = () => {
   const searchParams = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1");
 
-  // data only gets name, url, and id
-  const { data, isLoading, error } = useSWR(["getPokemonPage", page], () =>
-    getPokemonPage(page)
+  const { data, isLoading, mutate } = usePokemonPage<PokemonApiResponse>(
+    page,
+    12
   );
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      {data &&
-        data.results.map((pokemonEntry: Pokemon & { id: number }) => (
-          <Fragment key={pokemonEntry.name}>
-            <PokeCard name={pokemonEntry.name} />
-          </Fragment>
-        ))}
-      {isLoading && <div>Loading...</div>}
-      {error && <div>Failed to load</div>}
-    </div>
+    <>
+      <div className="pb-4">
+        <Button
+          variant={"outline"}
+          size={"icon"}
+          onClick={() => {
+            mutate();
+          }}
+        >
+          <RotateCcw className="w-4 h-4 text-zinc-600" />
+        </Button>
+      </div>
+
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+        {isLoading && <div>Loading...</div>}
+        {data &&
+          data.results.map((pokemon: Pokemon) => (
+            <PokeCard key={pokemon.name} name={pokemon.name} />
+          ))}
+      </div>
+    </>
   );
 };
 
