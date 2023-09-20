@@ -55,3 +55,19 @@ export function usePokemon<T>(name: string) {
 
   return { data, isLoading, mutate };
 }
+
+export function filterPokemonByName<T>(name: string) {
+  const { data, isLoading, mutate } = useSWR<T>(name, async () => {
+    try {
+      return await getPokemon(name);
+    } catch (error) {
+      if (error instanceof Error && error.cause === "404") {
+        return null;
+      } else {
+        throw error;
+      }
+    }
+  });
+
+  return { data, isLoading, mutate };
+}

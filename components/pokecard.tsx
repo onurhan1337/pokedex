@@ -15,11 +15,10 @@ import { Pokemon } from "types/pokemon";
 
 const PokeCard = ({ name }: { name: string }) => {
   const router = useRouter();
-  const { data: pokemon, isLoading } = usePokemon<Pokemon>(name);
+  const { data: pokemon } = usePokemon<Pokemon>(name);
 
   return (
     <Card>
-      {isLoading && <div>Loading...</div>}
       {pokemon && (
         <Fragment>
           <CardHeader>
