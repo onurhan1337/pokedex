@@ -10,10 +10,10 @@ Pokedex web app for learn useSWR
 
 ## TODO
 
-- [ ] Add @shadcn-ui/skeleton for loading states
-- [ X ] ~~Move usePokemon hook to custom hooks file~~
-- [ ] Add select filtering for main page
 - [ ] Add pagination for main page
+- [ X ] ~~Move usePokemon hook to custom hooks file~~
+- [ X ] ~~Add @shadcn-ui/skeleton for loading states~~
+- [ X ] ~~Add search by name filtering for main page~~
 - [ X ] ~~Improve error handling and utils functions~~
 - [ X ] ~~break down the individual components of the Pokemon detail page~~
 
