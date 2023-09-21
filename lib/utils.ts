@@ -2,6 +2,9 @@ import useSWR from "swr";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import type { Pokemon } from "types/pokemon";
+import type { PokemonApiResponse } from "@/components/pokelist";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -56,18 +59,17 @@ export function usePokemon<T>(name: string) {
   return { data, isLoading, mutate };
 }
 
-export function filterPokemonByName<T>(name: string) {
-  const { data, isLoading, mutate } = useSWR<T>(name, async () => {
-    try {
-      return await getPokemon(name);
-    } catch (error) {
-      if (error instanceof Error && error.cause === "404") {
-        return null;
-      } else {
-        throw error;
-      }
+export function filterPokemonByName(
+  data: PokemonApiResponse | undefined,
+  name: string
+) {
+  if (!data) {
+    return [];
+  }
+  return data.results.filter((pokemon: Pokemon) => {
+    if (!name) {
+      return true;
     }
+    return pokemon.name.toLowerCase().includes(name.toLowerCase());
   });
-
-  return { data, isLoading, mutate };
 }

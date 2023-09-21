@@ -2,17 +2,18 @@
 
 import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import { RotateCcw } from "lucide-react";
 
-import { Card, CardContent, CardFooter } from "./ui/card";
 import PokeCard from "./pokecard";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 import { Pokemon } from "types/pokemon";
 import { Skeleton } from "./ui/skeleton";
 import { usePokemonPage } from "lib/utils";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { RotateCcw } from "lucide-react";
+import { filterPokemonByName } from "lib/utils";
+import { Card, CardContent, CardFooter } from "./ui/card";
 
-interface PokemonApiResponse {
+export interface PokemonApiResponse {
   results: Pokemon[];
 }
 
@@ -26,17 +27,10 @@ const Pokelist = () => {
     12
   );
 
-  const filteredPokemon = useMemo(() => {
-    if (!data) {
-      return [];
-    }
-    return data.results.filter((pokemon: Pokemon) => {
-      if (!name) {
-        return true;
-      }
-      return pokemon.name.toLowerCase().includes(name.toLowerCase());
-    });
-  }, [data, name]);
+  const filteredPokemon = useMemo(
+    () => filterPokemonByName(data, name),
+    [data, name]
+  );
 
   return (
     <>
