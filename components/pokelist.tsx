@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
 import { RotateCcw } from "lucide-react";
 
 import PokeCard from "./pokecard";
@@ -9,9 +8,9 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Pokemon } from "types/pokemon";
 import { Skeleton } from "./ui/skeleton";
-import { usePokemonPage } from "lib/utils";
-import { filterPokemonByName } from "lib/utils";
+import Pagination from "./ui/pagination";
 import { Card, CardContent, CardFooter } from "./ui/card";
+import { usePokemonPage, filterPokemonByName } from "lib/utils";
 
 export interface PokemonApiResponse {
   results: Pokemon[];
@@ -19,9 +18,7 @@ export interface PokemonApiResponse {
 
 const Pokelist = () => {
   const [name, setName] = useState<string>("");
-  const searchParams = useSearchParams();
-  const page = parseInt(searchParams.get("page") || "1");
-
+  const [page, setPage] = useState<number>(0);
   const { data, isLoading, mutate } = usePokemonPage<PokemonApiResponse>(
     page,
     12
@@ -32,10 +29,14 @@ const Pokelist = () => {
     [data, name]
   );
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
   return (
     <>
       <div className="flex flex-row space-x-3 py-4 w-1/3">
-        <Button onClick={() => mutate()} variant={"outline"} size={"icon"}>
+        <Button onClick={() => mutate(page)} variant={"outline"} size={"icon"}>
           <RotateCcw size={16} />
         </Button>
         <Input
@@ -54,6 +55,23 @@ const Pokelist = () => {
             <PokeCard key={pokemon.name} name={pokemon.name} />
           ))}
       </div>
+
+      {data && filteredPokemon.length !== 0 && (
+        <Pagination
+          currentPage={page}
+          totalPages={Math.ceil(data.results.length)}
+          onPageChange={handlePageChange}
+        />
+      )}
+
+      {data && filteredPokemon.length === 0 && (
+        <div className="w-full mx-auto flex flex-col items-center justify-center">
+          <div className="text-2xl">No Pokemon found</div>
+          <div className="text-sm text-gray-500">
+            Try searching for another type
+          </div>
+        </div>
+      )}
     </>
   );
 };
