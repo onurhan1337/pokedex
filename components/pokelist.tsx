@@ -40,7 +40,7 @@ const Pokelist = () => {
           <RotateCcw size={16} />
         </Button>
         <Input
-          placeholder="Search by type"
+          placeholder="Search by name"
           onChange={(event) => setName(event.target.value)}
         />
       </div>
