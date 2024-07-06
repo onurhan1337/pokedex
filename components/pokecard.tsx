@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,12 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "./ui/badge";
 import { usePokemon } from "lib/utils";
+import Link from "next/link";
 import { Pokemon } from "types/pokemon";
+import { Badge } from "./ui/badge";
 
 const PokeCard = ({ name }: { name: string }) => {
-  const router = useRouter();
   const { data: pokemon } = usePokemon<Pokemon>(name);
 
   return (
@@ -61,15 +60,11 @@ const PokeCard = ({ name }: { name: string }) => {
           </CardContent>
           <CardFooter>
             <div className="w-full">
-              <Button
-                size={"sm"}
-                onClick={() => {
-                  router.push(`/pokemon/${pokemon.name}`);
-                }}
-                className="w-full"
-              >
-                Details
-              </Button>
+              <Link href={`/pokemon/${pokemon.name}`}>
+                <Button size={"sm"} className="w-full">
+                  Details
+                </Button>
+              </Link>
             </div>
           </CardFooter>
         </Fragment>
